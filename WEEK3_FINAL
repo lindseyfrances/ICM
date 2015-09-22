@@ -1,0 +1,236 @@
+//dashboard
+var dash = {
+  x: 0,
+  y: 500,
+  w: 1000,
+  h: 1000,
+};
+
+//stars
+var stars;
+var starsR=255;
+var starsG=255;
+var starsB=255;
+
+//Slider
+var dragging = false; 
+var x = 100;
+var y = 625;
+var w = 10;
+var h = 25;
+var sliderStart = 275;
+var sliderEnd = 625;
+var offsetX = 300;
+
+var draggingu = false;
+var ux = 100;
+var uy = 675;
+var uw = 10;
+var uh = 25;
+var sliderStartu = 275;
+var sliderEndu = 625;
+var offsetXu = 300;
+
+
+var draggingz = false;
+var zx = 100;
+var zy = 725;
+var zw = 10;
+var zh = 25;
+var sliderStartz = 275;
+var sliderEndz = 625;
+var offsetXz = 300;
+
+
+//buttons
+var button = {
+  x : 325,
+  y : 550,
+  d : 30,
+};
+
+//lights
+var light = {
+  x : 325,
+  y : 550,
+  d : 40,
+};
+
+//guage
+var gauge = {
+  x : 125 ,
+  y : 600 ,
+  d : 150,
+  l : 75,
+  lx1: 125,
+  ly1: 600,
+  lx2: 200,
+  ly2: 575,
+};
+
+var tint1;
+
+function preload(){
+  stars = loadImage("starsinthesky.jpg");
+}
+
+function setup() {
+  createCanvas(900, 1000);
+  angleMode(DEGREES);
+  tint(255, 220);
+  //  IF SLOW, COMMENT OUT TINT WHILE MESSING AROUND
+}
+
+function draw() {
+  //stars
+ background(starsR, starsG, starsB);
+
+
+  //SLIDER 1    LEFT/RIGHT~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  noStroke();
+  var b = map(x,sliderStart,sliderEnd-w,0,450);
+  var c = map(ux,sliderStartu,sliderEndu-uw,0,450);
+  var z = map(zx,sliderStartz,sliderEndz-zw,0,450);
+  
+  image(stars, -200-b, -c, dash.w+550+z, dash.h+200+z);
+  fill(200);
+  rect(dash.x, dash.y, dash.w, dash.h);
+  
+  if (dragging) {
+    x = mouseX + offsetX;
+  }
+  
+  x = constrain(x, sliderStart, sliderEnd-w);
+  
+  stroke(0);
+  line(sliderStart, y+h/2, sliderEnd, y+h/2);
+
+  rect(x, y, w, h);
+  
+
+//SLIDER 2   UP/DOWN ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  if (draggingu) {
+    ux = mouseX + offsetXu;
+  }
+
+  ux = constrain(ux, sliderStartu, sliderEndu-uw);
+  stroke(0);
+  line(sliderStartu, uy+uh/2, sliderEndu, uy+uh/2);
+
+  rect(ux, uy, uw, uh);
+  
+  //SLIDER 3   ZOOM ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  if (draggingz) {
+    zx = mouseX + offsetXz;
+  }
+
+  zx = constrain(zx, sliderStartz, sliderEndz-zw);
+  stroke(0);
+  line(sliderStartz, zy+zh/2, sliderEndz, zy+zh/2);
+
+  rect(zx, zy, zw, zh);
+
+
+  
+  //LIGHT TINT BUTTON ----------------------------------------------------------
+    push();
+
+  fill(100);
+  ellipse(button.x, button.y+50, button.d, button.d);
+  ellipse(button.x+125, button.y+50, button.d, button.d);
+  ellipse(button.x+250, button.y+50, button.d, button.d);
+  
+  
+      if (mouseX > button.x-20 && mouseX < button.x+button.d &&
+  mouseY > button.y+25 && mouseY < button.y+40 + button.d && mouseIsPressed){
+    fill(250, 40, 40);
+    starsR=255;
+    starsG=0;
+    starsB=0;
+  }
+         else if (mouseX > button.x+105 && mouseX < button.x+125+button.d &&
+  mouseY > button.y+25 && mouseY < button.y+40 + button.d && mouseIsPressed){
+    fill(255, 255, 40);
+    starsR=255;
+    starsG=255;
+    starsB=40;
+  }
+        else if (mouseX > button.x+230 && mouseX < button.x+250+button.d &&
+  mouseY > button.y+25 && mouseY < button.y+40 + button.d && mouseIsPressed){
+  fill(40, 255, 255);
+  starsR=40;
+  starsG=255;
+  starsB=255;
+  }
+ else{
+   fill(0);
+   starsR=255;
+   starsG=255;
+   starsB=255;
+ }
+  
+  
+  noStroke();
+  blendMode(SOFT_LIGHT);
+  for(var j=0; j<5; j++){
+    ellipse(light.x+125, light.y, light.d+ j*7, light.d+ j*7);
+  }
+ 
+
+  pop();
+  
+  
+  
+ //Gauge~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+
+  //gauge 1
+  fill(0);
+  ellipse(gauge.x, gauge.y, gauge.d, gauge.d);
+  
+  push();
+  stroke(255);
+  translate(gauge.lx1, gauge.ly1);
+  rotate(frameCount);//speed up by multiplying
+  line(0, 0, 0, gauge.d/2);
+  pop();
+
+  //gauge 1
+  fill(0);
+  noStroke();
+  ellipse(gauge.x+650, gauge.y, gauge.d, gauge.d);
+  
+  
+
+  push();
+  stroke(255);
+  translate(gauge.lx1+650, gauge.ly1);
+  rotate(frameCount);//speed up by multiplying
+  line(0, 0, 0, -gauge.d/2);
+  pop();
+}
+
+//SLider Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function mousePressed() {
+
+  if (mouseX > x && mouseX < x + w && mouseY > y && mouseY < y + h) {
+    dragging = true;
+    offsetX = x-mouseX;
+  }
+  if (mouseX > ux && mouseX < ux + uw && mouseY > uy && mouseY < uy + uh) {
+    draggingu = true;
+    offsetXu = ux-mouseX;
+  }
+   if (mouseX > zx && mouseX < zx + zw && mouseY > zy && mouseY < zy + zh) {
+    draggingz = true;
+    offsetXz = zx-mouseX;
+  }
+}
+
+function mouseReleased() {
+  dragging = false;
+  draggingu = false;
+  draggingz = false;
+}
+  
